@@ -36,7 +36,7 @@ void ATheRoomYouStayedInPlayerController::BeginPlay()
 void ATheRoomYouStayedInPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-
+	
 	// only add IMCs for local player controllers
 	if (IsLocalPlayerController())
 	{
@@ -47,7 +47,7 @@ void ATheRoomYouStayedInPlayerController::SetupInputComponent()
 			{
 				Subsystem->AddMappingContext(CurrentContext, 0);
 			}
-
+			
 			// only add these IMCs if we're not using mobile touch input
 			if (!ShouldUseTouchControls())
 			{
