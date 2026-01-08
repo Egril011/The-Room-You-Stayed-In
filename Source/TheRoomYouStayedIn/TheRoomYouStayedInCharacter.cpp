@@ -10,7 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "TheRoomYouStayedIn.h"
-#include "Camera/CameraComponent.h"
+#include "Interactation/InteractableComponent.h"
 
 ATheRoomYouStayedInCharacter::ATheRoomYouStayedInCharacter()
 {
@@ -43,14 +43,22 @@ ATheRoomYouStayedInCharacter::ATheRoomYouStayedInCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	
+	//Components
+	InteractableComponent = CreateDefaultSubobject<UInteractableComponent>(TEXT("InteractableComponent"));
 }
 
 void ATheRoomYouStayedInCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
+		
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATheRoomYouStayedInCharacter::Move);
+		
+		//Interact
+		EnhancedInputComponent->BindAction(InteractInput, ETriggerEvent::Started, this,
+			&ATheRoomYouStayedInCharacter::HandleInteract);
 	}
 	else
 	{
@@ -65,6 +73,15 @@ void ATheRoomYouStayedInCharacter::Move(const FInputActionValue& Value)
 
 	// route the input
 	DoMove(MovementVector.X, MovementVector.Y);
+}
+
+void ATheRoomYouStayedInCharacter::HandleInteract()
+{
+	//Execute the interaction 
+	if (!IsValid(InteractableComponent))
+		return;
+	
+	InteractableComponent->Interact(this);
 }
 
 void ATheRoomYouStayedInCharacter::DoMove(float Right, float Forward)

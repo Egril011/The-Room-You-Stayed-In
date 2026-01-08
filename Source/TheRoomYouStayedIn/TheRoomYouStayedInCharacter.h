@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "TheRoomYouStayedInCharacter.generated.h"
 
+class UInteractableComponent;
 class AFixedCamera;
 class USpringArmComponent;
 class UCameraComponent;
@@ -44,11 +45,18 @@ protected:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MouseLookAction;
+	
+	//Interact
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* InteractInput;
 
 public:
-
 	/** Constructor */
 	ATheRoomYouStayedInCharacter();	
+	
+	/** Handles move inputs from either controls or UI interfaces */
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void DoMove(float Right, float Forward);
 
 protected:
 	/** Initialize input action bindings */
@@ -56,11 +64,12 @@ protected:
 	
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
+	
+	UPROPERTY(VisibleAnywhere, Category="Interact")
+	TObjectPtr<UInteractableComponent> InteractableComponent;
 
-public:
-
-	/** Handles move inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="Input")
-	virtual void DoMove(float Right, float Forward);
+private:
+	UFUNCTION()
+	void HandleInteract();
 };
 
