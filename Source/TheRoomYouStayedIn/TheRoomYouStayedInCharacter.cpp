@@ -86,9 +86,15 @@ void ATheRoomYouStayedInCharacter::HandleInteract()
 
 void ATheRoomYouStayedInCharacter::DoMove(float Right, float Forward)
 {
-	const FVector WorldForward = FVector::ForwardVector; 
-	const FVector WorldRight   = FVector::RightVector;  
+	if (!IsValid(Controller))
+		return;
+	
+	const FRotator ControlRotation = Controller->GetControlRotation();
+	const FRotator Yaw =  FRotator(0.0f, ControlRotation.Yaw, 0.0f);
+	
+	const FVector VectorForward = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
+	const FVector VectorRight = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
 
-	AddMovementInput(WorldForward, Forward);
-	AddMovementInput(WorldRight, Right);
+	AddMovementInput(VectorForward, Forward);
+	AddMovementInput(VectorRight, Right);
 }
